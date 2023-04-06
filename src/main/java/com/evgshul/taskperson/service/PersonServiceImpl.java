@@ -3,15 +3,18 @@ package com.evgshul.taskperson.service;
 import com.evgshul.taskperson.dto.PersonDto;
 import com.evgshul.taskperson.dto.PersonMapper;
 import com.evgshul.taskperson.model.Gender;
+import com.evgshul.taskperson.model.Logg;
 import com.evgshul.taskperson.model.Person;
 import com.evgshul.taskperson.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +32,9 @@ public class PersonServiceImpl implements PersonService {
     private PersonMapper personMapper;
 
     @Autowired
+    private LoggService loggService;
+
+    @Autowired
     public PersonServiceImpl(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
@@ -41,18 +47,21 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void savePerson(Person person) {
         if (isFullNameExist(person.getFullName())) {
-            log.debug("Person with fulName {} is taken", person.getFullName());
+//            log.debug("Person with fulName {} is taken", person.getFullName());
             throw new IllegalStateException("Person firstName and lastName " + person.getFullName() + " taken");
         }
         if (isEmailExist(person.getEmail())) {
-            log.debug("This email {} is taken", person.getEmail());
+//            log.debug("This email {} is taken", person.getEmail());
             throw new IllegalStateException("This email " + person.getEmail() + "is taken");
         }
         if (isPhoneNumberExist(person.getPhoneNumber())) {
-            log.debug("This phone number {} is taken", person.getPhoneNumber());
-            throw new IllegalStateException("This phone number " + person.getPhoneNumber() + "is taken");
+//            log.debug("This phone number {} is taken", person.getPhoneNumber());
+            throw new IllegalStateException("This phone number " + person.getPhoneNumber() + " is taken");
         }
         personRepository.save(person);
+        final String loggMessage = String.format("New Person %s was created", person.getFullName());
+        log.debug(loggMessage);
+        loggService.saveLogg(new Logg(new Date(), log.getName(), Level.DEBUG.toString(), loggMessage));
     }
 
     @Override
@@ -92,7 +101,7 @@ public class PersonServiceImpl implements PersonService {
         }
 
         final LocalDate bod = person.getBirthdate();
-        if(bod != null && !Objects.equals(existPerson.getBirthdate(), bod)) {
+        if (bod != null && !Objects.equals(existPerson.getBirthdate(), bod)) {
             existPerson.setBirthdate(bod);
         }
 
@@ -102,12 +111,12 @@ public class PersonServiceImpl implements PersonService {
         }
 
         final String phoneNumber = person.getPhoneNumber();
-        if(!isPhoneNumberExist(phoneNumber) && !Objects.equals(existPerson.getPhoneNumber(), phoneNumber)) {
+        if (!isPhoneNumberExist(phoneNumber) && !Objects.equals(existPerson.getPhoneNumber(), phoneNumber)) {
             existPerson.setPhoneNumber(phoneNumber);
         }
 
         final String email = person.getEmail();
-        if(!isEmailExist(email) && !Objects.equals(existPerson.getEmail(), email)) {
+        if (!isEmailExist(email) && !Objects.equals(existPerson.getEmail(), email)) {
             existPerson.setPhoneNumber(email);
         }
     }

@@ -7,9 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,7 +40,6 @@ public class Person {
     @Column(name = "fullname")
     @Getter
     @Setter
-    @Pattern(regexp = "(^[\\p{L}\\s'.-]+$)", message = "Not valid first name and last name")
     private String fullName;
 
     /**
@@ -62,7 +58,6 @@ public class Person {
     @Getter
     @Setter
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @Past(message = "date of birth must be less than today")
     private LocalDate birthdate;
 
     /**
@@ -71,7 +66,6 @@ public class Person {
     @Column(name = "phoneNumber")
     @Getter
     @Setter
-    @Pattern(regexp = "^\\d{12}$", message = "Phone number should consist from numbers only")
     private String phoneNumber;
 
     /**
@@ -80,7 +74,6 @@ public class Person {
     @Column(name = "email")
     @Getter
     @Setter
-    @Email(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$", message = "wrong email value")
     private String email;
 
     /**
