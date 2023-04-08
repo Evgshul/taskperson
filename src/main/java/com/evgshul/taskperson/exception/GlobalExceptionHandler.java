@@ -21,12 +21,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Validation handling service.
+ */
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private LoggService loggService;
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatusCode status,
@@ -37,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 messages.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(", "));
         ErrorDetails errorDetails = new ErrorDetails(new Date(), HttpStatus.BAD_REQUEST.toString(), defaultMessage);
         log.error("Entity validation fail: Date: {}, message: {}", errorDetails.getTimestamp().toString(), defaultMessage);
-        loggService.saveLogg(new Logg(errorDetails.getTimestamp(), log.getName(), Level.ERROR.toString(), defaultMessage));
+        loggService.saveLogg(new Logg(errorDetails.getTimestamp(), log.getName(), defaultMessage));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }

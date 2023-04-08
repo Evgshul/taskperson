@@ -6,9 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,29 +14,22 @@ public class PersonMapperImpl implements PersonMapper {
 
     private final PersonRepository personRepository;
 
-    @Autowired
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     @Autowired
-    public PersonMapperImpl(PersonRepository personRepository) {
+    public PersonMapperImpl(PersonRepository personRepository, ModelMapper mapper) {
         this.personRepository = personRepository;
-    }
-
-    @Override
-    public PersonDto findPersonFullName(final String fullName) {
-        final Optional<Person> person = this.personRepository.findByFullName(fullName);
-        return person.map(value -> this.mapper.map(value, PersonDto.class)).orElse(null);
-    }
-
-    @Override
-    public PersonDto findPersonByBirthDay(LocalDate dob) {
-        final Optional<Person> person =  this.personRepository.findByBirthdate(dob);
-        return person.map(value -> this.mapper.map(value, PersonDto.class)).orElse(null);
+        this.mapper = mapper;
     }
 
     @Override
     public Person personDtoToPerson(PersonDto personDto) {
-        return this.mapper.map(personDto , Person.class);
+        return this.mapper.map(personDto, Person.class);
+    }
+
+    @Override
+    public PersonDto personToPersonDto(Person person) {
+        return this.mapper.map(person, PersonDto.class);
     }
 
     @Override

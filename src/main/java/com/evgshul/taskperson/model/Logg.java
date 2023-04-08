@@ -8,15 +8,19 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.util.Date;
 
+/**
+ * Model object Logg to store logging parameters.
+ */
 @ToString
 @Entity
 @Table
+@NoArgsConstructor
 public class Logg {
 
     @Id
@@ -36,16 +40,11 @@ public class Logg {
 
     @Column
     @Getter@Setter
-    private String level;
-
-    @Column
-    @Getter@Setter
     private String message;
 
-    public Logg(Date date, String className, String level, String message) {
+    public Logg(Date date, String className, String message) {
         this.timestamp = date;
         this.className = className;
-        this.level = level;
         this.message = message;
     }
 }
