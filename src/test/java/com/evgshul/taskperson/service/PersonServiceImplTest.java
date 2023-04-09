@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -62,6 +63,60 @@ class PersonServiceImplTest {
         assertEquals("037127090911", checkPerson.get().getPhoneNumber(), "Invalid Person phoneNumber value");
         assertEquals("test@mail.org", checkPerson.get().getEmail(), "Invalid Person email value");
 
+    }
+
+    @Test
+    void savePersonTest_FullNameExist() {
+        PersonDto person = createValidPersonDto();
+        underTest.savePerson(person);
+
+        PersonDto newPerson = new PersonDto();
+        newPerson.setFullName("John Silver");
+        newPerson.setGender(Gender.FEMALE);
+        newPerson.setBirthdate(convertStringToLocalDate("18/09/1980"));
+        newPerson.setEmail("test2@mail.com");
+        newPerson.setPhoneNumber("097256987421");
+
+
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> underTest.savePerson(newPerson));
+        assertTrue(exception.getMessage().contains("Person firstName and lastName " + newPerson.getFullName() + " taken"));
+    }
+
+    @Test
+    void savePersonTest_EmailExist() {
+        PersonDto person = createValidPersonDto();
+        underTest.savePerson(person);
+
+        PersonDto newPerson = new PersonDto();
+        newPerson.setFullName("Yangya Satpath");
+        newPerson.setGender(Gender.FEMALE);
+        newPerson.setBirthdate(convertStringToLocalDate("18/09/1980"));
+        newPerson.setEmail("test@mail.org");
+        newPerson.setPhoneNumber("097256987421");
+
+
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> underTest.savePerson(newPerson));
+        assertTrue(exception.getMessage().contains("This email " + newPerson.getEmail() + " is taken"));
+    }
+
+    @Test
+    void savePersonTest_PhoneNumberExist() {
+        PersonDto person = createValidPersonDto();
+        underTest.savePerson(person);
+
+        PersonDto newPerson = new PersonDto();
+        newPerson.setFullName("Yangya Satpath");
+        newPerson.setGender(Gender.FEMALE);
+        newPerson.setBirthdate(convertStringToLocalDate("18/09/1980"));
+        newPerson.setEmail("test@gmail.com");
+        newPerson.setPhoneNumber("037127090911");
+
+
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> underTest.savePerson(newPerson));
+        assertTrue(exception.getMessage().contains("This phone number " + newPerson.getPhoneNumber() + " is taken"));
     }
 
     @Test
