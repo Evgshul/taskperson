@@ -53,23 +53,25 @@ public class PersonServiceImpl implements PersonService {
     /**
      * Create new entity Person.
      *
-     * @param person parameters to save new entity Person
+     * @param personDto parameters to save new entity PersonDto
      */
     @Override
-    public void savePerson(Person person) {
+    public Person savePerson(PersonDto personDto) {
+        Person person = this.personMapper.personDtoToPerson(personDto);
         if (isFullNameExist(person.getFullName())) {
             throw new IllegalStateException("Person firstName and lastName " + person.getFullName() + " taken");
         }
         if (isEmailExist(person.getEmail())) {
-            throw new IllegalStateException("This email " + person.getEmail() + "is taken");
+            throw new IllegalStateException("This email " + person.getEmail() + " is taken");
         }
         if (isPhoneNumberExist(person.getPhoneNumber())) {
             throw new IllegalStateException("This phone number " + person.getPhoneNumber() + " is taken");
         }
-        personRepository.save(person);
+
         final String loggMessage = String.format("New Person %s was created", person.getFullName());
         log.debug(loggMessage);
         loggService.saveLogg(saveLogToDatabase(loggMessage));
+        return personRepository.save(person);
     }
 
     /**
@@ -115,7 +117,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     @Transactional
-    public void updatePerson(PersonDto person, Long id) {
+    public Person updatePerson(PersonDto person, Long id) {
         Person existPerson = personRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
                         "Person with id " + id + " does not exist"
@@ -165,6 +167,7 @@ public class PersonServiceImpl implements PersonService {
             log.info(loggMessage);
             loggService.saveLogg(saveLogToDatabase(loggMessage));
         }
+        return existPerson;
     }
 
     /**

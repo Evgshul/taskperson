@@ -12,13 +12,13 @@ public interface PersonService {
 
     List<PersonDto> getPersonsList();
 
-    void savePerson(Person person);
+    Person savePerson(PersonDto personDto);
 
     PersonDto findPersonByName(String fullName);
 
     PersonDto findPersonByBirthday(LocalDate bod);
 
-    void updatePerson(PersonDto person, Long id);
+    Person updatePerson(PersonDto person, Long id);
 
     void deletePerson(Long personId);
 

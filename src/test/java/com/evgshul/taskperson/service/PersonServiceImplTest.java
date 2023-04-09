@@ -6,7 +6,6 @@ import com.evgshul.taskperson.dto.PersonMapper;
 import com.evgshul.taskperson.dto.PersonMapperImpl;
 import com.evgshul.taskperson.model.Gender;
 import com.evgshul.taskperson.model.Person;
-import com.evgshul.taskperson.repository.LoggRepository;
 import com.evgshul.taskperson.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,14 +32,10 @@ class PersonServiceImplTest {
     @Autowired
     private PersonRepository personRepository;
 
-    private PersonServiceImpl underTest;
+    private PersonService underTest;
 
     @Mock
-    private LoggServiceImpl loggService;
-
-    private LoggRepository loggRepository;
-
-    private PersonMapper personMapper;
+    private LoggService loggService;
 
     @Autowired
     private ModelMapper mapper;
@@ -48,13 +43,13 @@ class PersonServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        personMapper = new PersonMapperImpl(personRepository, mapper);
+        PersonMapper personMapper = new PersonMapperImpl(personRepository, mapper);
         underTest = new PersonServiceImpl(personRepository, personMapper, loggService);
     }
 
     @Test
     void savePersonTest_success() {
-        Person person = createValidPerson();
+        PersonDto person = createValidPersonDto();
 
         underTest.savePerson(person);
 
@@ -153,6 +148,15 @@ class PersonServiceImplTest {
         assertEquals("097256987421", updatedPerson.get().getPhoneNumber(), "Invalid Person phoneNumber value");
         assertEquals("test2@mail.com", updatedPerson.get().getEmail(), "Invalid Person email value");
 
+    }
+
+    private PersonDto createValidPersonDto() {
+        return new PersonDto(
+                "John Silver",
+                convertStringToLocalDate("14/01/2000"),
+                Gender.MALE,
+                "037127090911",
+                "test@mail.org");
     }
 
     private Person createValidPerson() {

@@ -3,7 +3,6 @@ package com.evgshul.taskperson.exception;
 import com.evgshul.taskperson.model.Logg;
 import com.evgshul.taskperson.service.LoggService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
