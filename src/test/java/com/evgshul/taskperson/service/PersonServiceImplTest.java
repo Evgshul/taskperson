@@ -84,7 +84,7 @@ class PersonServiceImplTest {
     }
 
     @Test
-    void savePersonTest_EmailExist() {
+    void testSavePerson_EmailExist() {
         PersonDto person = createValidPersonDto();
         underTest.savePerson(person);
 
@@ -102,7 +102,7 @@ class PersonServiceImplTest {
     }
 
     @Test
-    void savePersonTest_PhoneNumberExist() {
+    void testSavePerson_PhoneNumberExist() {
         PersonDto person = createValidPersonDto();
         underTest.savePerson(person);
 
@@ -136,6 +136,16 @@ class PersonServiceImplTest {
     }
 
     @Test
+    void testFindPirsonByName_FullNameNotExist() {
+        Person person = createValidPerson();
+        personRepository.save(person);
+
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> underTest.findPersonByName("Den Philips"));
+        assertTrue(exception.getMessage().contains("Person Den Philips not find"));
+    }
+
+    @Test
     void testFindPirsonByBirthdate_success() {
         LocalDate testedBirthdate = convertStringToLocalDate("18/06/1999");
         Person person = createValidPerson();
@@ -151,6 +161,18 @@ class PersonServiceImplTest {
                 , "Invalid Person birthdate value");
         assertEquals("037127090911", checkPerson.getPhoneNumber(), "Invalid Person phoneNumber value");
         assertEquals("test@mail.org", checkPerson.getEmail(), "Invalid Person email value");
+    }
+
+    @Test
+    void testFindPirsonByBirthdate_InvalidBirthdate() {
+        LocalDate testedBirthdate = convertStringToLocalDate("18/06/1999");
+        Person person = createValidPerson();
+        person.setBirthdate(testedBirthdate);
+        personRepository.save(person);
+
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> underTest.findPersonByBirthday(convertStringToLocalDate("10/02/1982")));
+        assertTrue(exception.getMessage().contains("Person with day of birth 10/02/1982 does not exist"));
     }
 
     @Test
@@ -176,6 +198,17 @@ class PersonServiceImplTest {
         assertTrue(finalPersonList.stream().noneMatch(p -> person2.getFullName().equals(p.getFullName())
                         && person2.getBirthdate().equals(p.getBirthdate()) && person2.getEmail().equals(p.getEmail())),
                 "Person with name 'Yangya Satpath' should not exist");
+    }
+
+    @Test
+    void testDeletePerson_DuchPersonIsNotExist() {
+        Person person = createValidPerson();
+        personRepository.save(person);
+        long personId = 2L;
+
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> underTest.deletePerson(personId));
+        assertTrue(exception.getMessage().contains("Person with ID " + personId + " does not exist"));
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -101,9 +102,9 @@ public class PersonServiceImpl implements PersonService {
     public PersonDto findPersonByBirthday(LocalDate dob) {
         final Optional<Person> person =  this.personRepository.findByBirthdate(dob);
         if (person.isEmpty()) {
-            final String birthday = dob.toString();
+            final String birthday = dob.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             log.debug("Person with day of birth : {} does not exist", birthday);
-            throw new IllegalStateException("Person with day of birth " + birthday + "does not exist");
+            throw new IllegalStateException("Person with day of birth " + birthday + " does not exist");
         } else {
             return personMapper.personToPersonDto(person.get());
         }
