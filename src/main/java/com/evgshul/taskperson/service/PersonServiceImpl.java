@@ -125,7 +125,7 @@ public class PersonServiceImpl implements PersonService {
                 ));
 
         final String fullName = person.getFullName();
-        if (!isFullNameExist(fullName) && !Objects.equals(existPerson.getFullName(), fullName)) {
+        if (!Objects.equals(existPerson.getFullName(), fullName) && !isFullNameExist(fullName)) {
             existPerson.setFullName(fullName);
             final String loggMessage = String.format("Person id: %s was changed fullName from %s to %s ",
                     id, existPerson.getFullName(), fullName);
@@ -152,7 +152,7 @@ public class PersonServiceImpl implements PersonService {
         }
 
         final String phoneNumber = person.getPhoneNumber();
-        if (!isPhoneNumberExist(phoneNumber) && !Objects.equals(existPerson.getPhoneNumber(), phoneNumber)) {
+        if (!Objects.equals(existPerson.getPhoneNumber(), phoneNumber) && !isPhoneNumberExist(phoneNumber)) {
             existPerson.setPhoneNumber(phoneNumber);
             final String loggMessage = String.format("Person id: %s was changed phoneNumber from %s to %s ",
                     id, existPerson.getPhoneNumber(), phoneNumber);
@@ -161,7 +161,7 @@ public class PersonServiceImpl implements PersonService {
         }
 
         final String email = person.getEmail();
-        if (!isEmailExist(email) && !Objects.equals(existPerson.getEmail(), email)) {
+        if (!Objects.equals(existPerson.getEmail(), email) && !isEmailExist(email)) {
             existPerson.setEmail(email);
             final String loggMessage = String.format("Person id: %s was changed email from %s to %s ",
                     id, existPerson.getEmail(), email);

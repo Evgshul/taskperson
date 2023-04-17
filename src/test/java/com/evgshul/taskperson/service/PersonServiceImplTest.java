@@ -238,6 +238,64 @@ class PersonServiceImplTest {
 
     }
 
+    @Test
+    void testUpdatePerson_InvalidParametrsToUpdate_1() {
+        Person person = createValidPerson();
+        personRepository.save(person);
+
+        Person person2 = new Person();
+        person2.setFullName("Yangya Satpath");
+        person2.setGender(Gender.FEMALE);
+        person2.setBirthdate(convertStringToLocalDate("18/09/1980"));
+        person2.setEmail("test2@mail.com");
+        person2.setPhoneNumber("097256987421");
+        personRepository.save(person2);
+
+
+        PersonDto personNewValues = new PersonDto();
+        personNewValues.setFullName("Yangya Satpath");
+        personNewValues.setGender(Gender.FEMALE);
+        personNewValues.setBirthdate(convertStringToLocalDate("18/09/1980"));
+        personNewValues.setEmail("test2@mail.com");
+        personNewValues.setPhoneNumber("097256987421");
+
+        final Long personId = person2.getId();
+        underTest.updatePerson(personNewValues, personId);
+        Optional<Person> updatedPerson = personRepository.findById(personId);
+        assertTrue(updatedPerson.isPresent(), "Person should exist");
+
+        assertEquals(person2, updatedPerson.get(), "The 'Person2' entity should not be changed if the parameters for update equal existing params");
+    }
+
+    @Test
+    void testUpdatePerson_InvalidParametrsToUpdate_2() {
+        Person person = createValidPerson();
+        personRepository.save(person);
+
+        Person person2 = new Person();
+        person2.setFullName("Yangya Satpath");
+        person2.setGender(Gender.FEMALE);
+        person2.setBirthdate(convertStringToLocalDate("18/09/1980"));
+        person2.setEmail("test2@mail.com");
+        person2.setPhoneNumber("097256987421");
+        personRepository.save(person2);
+
+
+        PersonDto personNewValues = new PersonDto();
+        personNewValues.setFullName("John Silver");
+        personNewValues.setGender(Gender.MALE);
+        personNewValues.setBirthdate(null);
+        personNewValues.setEmail("test@mail.org");
+        personNewValues.setPhoneNumber("037127090911");
+
+        final Long personId = person2.getId();
+        underTest.updatePerson(personNewValues, personId);
+        Optional<Person> updatedPerson = personRepository.findById(personId);
+        assertTrue(updatedPerson.isPresent(), "Person should exist");
+
+        assertEquals(person2, updatedPerson.get(), "The 'Person2' entity should not be changed if the parameters was taken");
+    }
+
     private PersonDto createValidPersonDto() {
         return new PersonDto(
                 "John Silver",
