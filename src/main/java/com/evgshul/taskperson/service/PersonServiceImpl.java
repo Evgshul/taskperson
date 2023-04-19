@@ -8,7 +8,6 @@ import com.evgshul.taskperson.model.Person;
 import com.evgshul.taskperson.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +30,6 @@ public class PersonServiceImpl implements PersonService {
     private final PersonMapper personMapper;
 
     private final LoggService loggService;
-
-    private ModelMapper modelMapper;
 
     @Autowired
     public PersonServiceImpl(PersonRepository personRepository, PersonMapper personMapper, LoggService loggService) {

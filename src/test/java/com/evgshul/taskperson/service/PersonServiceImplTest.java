@@ -58,8 +58,8 @@ class PersonServiceImplTest {
         assertTrue(checkPerson.isPresent(), "Person should exist");
         assertEquals("John Silver", checkPerson.get().getFullName(), "Invalid Person fullName value");
         assertEquals("MALE", checkPerson.get().getGender().name(), "Invalid Person gender value");
-        assertEquals("14/01/2000", convertLocalDateToString(checkPerson.get().getBirthdate())
-                , "Invalid Person birthdate value");
+        assertEquals("14/01/2000", convertLocalDateToString(checkPerson.get().getBirthdate()),
+                "Invalid Person birthdate value");
         assertEquals("037127090911", checkPerson.get().getPhoneNumber(), "Invalid Person phoneNumber value");
         assertEquals("test@mail.org", checkPerson.get().getEmail(), "Invalid Person email value");
 
