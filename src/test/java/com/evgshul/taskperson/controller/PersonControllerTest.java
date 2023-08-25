@@ -6,6 +6,7 @@ import com.evgshul.taskperson.model.Gender;
 import com.evgshul.taskperson.model.Person;
 import com.evgshul.taskperson.repository.PersonRepository;
 import com.evgshul.taskperson.service.LoggService;
+import com.evgshul.taskperson.service.PersonDtoBuilder;
 import com.evgshul.taskperson.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -82,12 +83,16 @@ class PersonControllerTest {
     @Test
     void testGetAllUserAccountsController() throws Exception {
         PersonDto personDto = createPersonDto();
-        PersonDto personDto1 = new PersonDto();
-        personDto1.setFullName("Yangya Satpath");
-        personDto1.setGender(Gender.FEMALE);
-        personDto1.setBirthdate(convertStringToLocalDate("18/09/1980"));
-        personDto1.setEmail("test2@mail.com");
-        personDto1.setPhoneNumber("097256987421");
+
+
+        PersonDto personDto1 = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("Yangya Satpath")
+                .withGender(Gender.FEMALE)
+                .withBirthdate(convertStringToLocalDate("18/09/1980"))
+                .withEmail("test2@mail.com")
+                .withPhoneNumber("097256987421")
+                .build();
+
         List<PersonDto> personsList = new ArrayList<>();
         personsList.add(personDto);
         personsList.add(personDto1);
@@ -203,12 +208,13 @@ class PersonControllerTest {
     }
 
     private PersonDto createPersonDto() {
-        return new PersonDto(
-                "John Silver",
-                convertStringToLocalDate("14/01/2000"),
-                Gender.MALE,
-                "037127090911",
-                "test@mail.org");
+        return PersonDtoBuilder.personDtoBuilder()
+                .withFullName("John Silver")
+                .withBirthdate(convertStringToLocalDate("14/01/2000"))
+                .withGender(Gender.MALE)
+                .withPhoneNumber("037127090911")
+                .withEmail("test@mail.org")
+                .build();
     }
 
     private String convertLocalDateToString(final LocalDate date) {

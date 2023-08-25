@@ -70,13 +70,13 @@ class PersonServiceImplTest {
         PersonDto person = createValidPersonDto();
         underTest.savePerson(person);
 
-        PersonDto newPerson = new PersonDto();
-        newPerson.setFullName("John Silver");
-        newPerson.setGender(Gender.FEMALE);
-        newPerson.setBirthdate(convertStringToLocalDate("18/09/1980"));
-        newPerson.setEmail("test2@mail.com");
-        newPerson.setPhoneNumber("097256987421");
-
+        PersonDto newPerson = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("John Silver")
+                .withGender(Gender.FEMALE)
+                .withBirthdate(convertStringToLocalDate("18/09/1980"))
+                .withPhoneNumber("097256987421")
+                .withEmail("test2@mail.com")
+                .build();
 
         Exception exception = assertThrows(IllegalStateException.class,
                 () -> underTest.savePerson(newPerson));
@@ -88,13 +88,13 @@ class PersonServiceImplTest {
         PersonDto person = createValidPersonDto();
         underTest.savePerson(person);
 
-        PersonDto newPerson = new PersonDto();
-        newPerson.setFullName("Yangya Satpath");
-        newPerson.setGender(Gender.FEMALE);
-        newPerson.setBirthdate(convertStringToLocalDate("18/09/1980"));
-        newPerson.setEmail("test@mail.org");
-        newPerson.setPhoneNumber("097256987421");
-
+        PersonDto newPerson = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("Yangya Satpath")
+                .withGender(Gender.FEMALE)
+                .withBirthdate(convertStringToLocalDate("18/09/1980"))
+                .withEmail("test@mail.org")
+                .withPhoneNumber("097256987421")
+                .build();
 
         Exception exception = assertThrows(IllegalStateException.class,
                 () -> underTest.savePerson(newPerson));
@@ -106,13 +106,13 @@ class PersonServiceImplTest {
         PersonDto person = createValidPersonDto();
         underTest.savePerson(person);
 
-        PersonDto newPerson = new PersonDto();
-        newPerson.setFullName("Yangya Satpath");
-        newPerson.setGender(Gender.FEMALE);
-        newPerson.setBirthdate(convertStringToLocalDate("18/09/1980"));
-        newPerson.setEmail("test@gmail.com");
-        newPerson.setPhoneNumber("037127090911");
-
+        PersonDto newPerson = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("Yangya Satpath")
+                .withGender(Gender.FEMALE)
+                .withBirthdate(convertStringToLocalDate("18/09/1980"))
+                .withEmail("test@gmail.com")
+                .withPhoneNumber("037127090911")
+                .build();
 
         Exception exception = assertThrows(IllegalStateException.class,
                 () -> underTest.savePerson(newPerson));
@@ -216,16 +216,16 @@ class PersonServiceImplTest {
         Person person = createValidPerson();
         personRepository.save(person);
 
-
-        PersonDto personNewValus = new PersonDto();
-        personNewValus.setFullName("Yangya Satpath");
-        personNewValus.setGender(Gender.FEMALE);
-        personNewValus.setBirthdate(convertStringToLocalDate("18/09/1980"));
-        personNewValus.setEmail("test2@mail.com");
-        personNewValus.setPhoneNumber("097256987421");
+        PersonDto personNewValues = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("Yangya Satpath")
+                .withGender(Gender.FEMALE)
+                .withBirthdate(convertStringToLocalDate("18/09/1980"))
+                .withEmail("test2@mail.com")
+                .withPhoneNumber("097256987421")
+                .build();
 
         final Long personId = person.getId();
-        underTest.updatePerson(personNewValus, personId);
+        underTest.updatePerson(personNewValues, personId);
         Optional<Person> updatedPerson = personRepository.findById(personId);
         assertTrue(updatedPerson.isPresent(), "Person should exist");
 
@@ -251,13 +251,13 @@ class PersonServiceImplTest {
         person2.setPhoneNumber("097256987421");
         personRepository.save(person2);
 
-
-        PersonDto personNewValues = new PersonDto();
-        personNewValues.setFullName("Yangya Satpath");
-        personNewValues.setGender(Gender.FEMALE);
-        personNewValues.setBirthdate(convertStringToLocalDate("18/09/1980"));
-        personNewValues.setEmail("test2@mail.com");
-        personNewValues.setPhoneNumber("097256987421");
+        PersonDto personNewValues = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("Yangya Satpath")
+                .withGender(Gender.FEMALE)
+                .withBirthdate(convertStringToLocalDate("18/09/1980"))
+                .withEmail("test2@mail.com")
+                .withPhoneNumber("097256987421")
+                .build();
 
         final Long personId = person2.getId();
         underTest.updatePerson(personNewValues, personId);
@@ -280,13 +280,12 @@ class PersonServiceImplTest {
         person2.setPhoneNumber("097256987421");
         personRepository.save(person2);
 
-
-        PersonDto personNewValues = new PersonDto();
-        personNewValues.setFullName("John Silver");
-        personNewValues.setGender(Gender.MALE);
-        personNewValues.setBirthdate(null);
-        personNewValues.setEmail("test@mail.org");
-        personNewValues.setPhoneNumber("037127090911");
+        PersonDto personNewValues = PersonDtoBuilder.personDtoBuilder()
+                .withFullName("John Silver")
+                .withGender(Gender.MALE)
+                .withEmail("test@mail.org")
+                .withPhoneNumber("037127090911")
+                .build();
 
         final Long personId = person2.getId();
         underTest.updatePerson(personNewValues, personId);
@@ -297,12 +296,13 @@ class PersonServiceImplTest {
     }
 
     private PersonDto createValidPersonDto() {
-        return new PersonDto(
-                "John Silver",
-                convertStringToLocalDate("14/01/2000"),
-                Gender.MALE,
-                "037127090911",
-                "test@mail.org");
+        return PersonDtoBuilder.personDtoBuilder()
+                .withFullName("John Silver")
+                .withBirthdate(convertStringToLocalDate("14/01/2000"))
+                .withGender(Gender.MALE)
+                .withPhoneNumber("037127090911")
+                .withEmail("test@mail.org")
+                .build();
     }
 
     private Person createValidPerson() {
