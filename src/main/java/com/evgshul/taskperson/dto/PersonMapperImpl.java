@@ -4,7 +4,6 @@ import com.evgshul.taskperson.model.Person;
 import com.evgshul.taskperson.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +31,6 @@ public class PersonMapperImpl implements PersonMapper {
     @Override
     public List<PersonDto> getPersonsList() {
         final List<Person> personList = this.personRepository.findAll();
-        return personList.stream().map(person -> mapper.map(person, PersonDto.class)).collect(Collectors.toList());
+        return personList.stream().map(person -> mapper.map(person, PersonDto.class)).toList();
     }
 }
