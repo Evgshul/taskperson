@@ -2,7 +2,9 @@ package com.evgshul.taskperson.dto;
 
 import com.evgshul.taskperson.model.Person;
 import com.evgshul.taskperson.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +12,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @__(@Autowired))
 public class PersonMapperImpl implements PersonMapper {
 
     private final PersonRepository personRepository;
 
     private final ModelMapper mapper;
-
-    @Autowired
-    public PersonMapperImpl(PersonRepository personRepository, ModelMapper mapper) {
-        this.personRepository = personRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public Person personDtoToPerson(PersonDto personDto) {
