@@ -7,6 +7,7 @@ import com.evgshul.taskperson.model.Logg;
 import com.evgshul.taskperson.model.Person;
 import com.evgshul.taskperson.repository.PersonRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Class for managing on Persons entity
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @__(@Autowired))
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
@@ -31,12 +32,7 @@ public class PersonServiceImpl implements PersonService {
 
     private final LoggService loggService;
 
-    @Autowired
-    public PersonServiceImpl(PersonRepository personRepository, PersonMapper personMapper, LoggService loggService) {
-        this.personRepository = personRepository;
-        this.personMapper = personMapper;
-        this.loggService = loggService;
-    }
+    private static final String DNE = " does not exist";
 
     /**
      * Find all saved 'Persons'.
@@ -49,7 +45,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Create new entity Person.
+     * Create a new entity Person.
      *
      * @param personDto parameters to save new entity PersonDto
      */
@@ -80,13 +76,12 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public PersonDto findPersonByName(String fullName) {
-        final Optional<Person> person = personRepository.findByFullName(fullName);
-        if (person.isEmpty()) {
-            log.debug("Person : {} not found", fullName);
-            throw new IllegalStateException("Person " + fullName + " not find");
-        } else {
-            return personMapper.personToPersonDto(person.get());
-        }
+        return personRepository.findByFullName(fullName)
+                .map(personMapper::personToPersonDto)
+                .orElseThrow(() -> {
+                    log.debug("Person : {} not found", fullName);
+                    return new IllegalStateException("Person " + fullName + " not find");
+                });
     }
 
     /**
@@ -97,28 +92,27 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public PersonDto findPersonByBirthday(LocalDate dob) {
-        final Optional<Person> person =  this.personRepository.findByBirthdate(dob);
-        if (person.isEmpty()) {
-            final String birthday = dob.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            log.debug("Person with day of birth : {} does not exist", birthday);
-            throw new IllegalStateException("Person with day of birth " + birthday + " does not exist");
-        } else {
-            return personMapper.personToPersonDto(person.get());
-        }
+        return this.personRepository.findByBirthdate(dob)
+                .map(personMapper::personToPersonDto)
+                .orElseThrow(() -> {
+                    String birthday = dob.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    log.debug("Person with date of birth:{} {}", DNE, birthday);
+                    return new IllegalStateException("Person with date of birth " + birthday + DNE);
+                });
     }
 
     /**
      * Update person data method.
      *
      * @param person personDto incoming field to update Person
-     * @param id     unique Person identificator
+     * @param id     unique Person identification
      */
     @Override
     @Transactional
     public Person updatePerson(PersonDto person, Long id) {
         Person existPerson = personRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
-                        "Person with id " + id + " does not exist"
+                        "Person with id " + id + DNE
                 ));
 
         final String fullName = person.getFullName();
@@ -169,15 +163,15 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Remove existing Person entity from database.
+     * Remove existing Person entity from a database.
      *
-     * @param personId unique Person identificator
+     * @param personId unique Person identification
      */
     @Override
     public void deletePerson(Long personId) {
         final boolean existPerson = personRepository.existsById(personId);
         if (!existPerson) {
-            throw new IllegalStateException("Person with ID " + personId + " does not exist");
+            throw new IllegalStateException("Person with ID " + personId + DNE);
         }
         personRepository.deleteById(personId);
     }
@@ -193,7 +187,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Check if email exist in database.
+     * Check if email exists in a database.
      *
      * @param email checked parameter email
      * @return bool true ore false
@@ -203,7 +197,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Check if phoneNumber exist in database.
+     * Check if phoneNumber exist in a database.
      *
      * @param phoneNumber checked parameter phoneNumber
      * @return bool true ore false
@@ -213,7 +207,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Preparing new log parameters to save in database.
+     * Preparing new log parameters to save in a database.
      *
      * @param message logg message
      * @return new log object
